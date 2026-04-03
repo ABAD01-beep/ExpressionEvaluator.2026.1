@@ -4,7 +4,7 @@ using System.Globalization;
 
 public class Evaluator
 {
-    public static double Evaluate(string infix)
+    public static decimal Evaluate(string infix)
     {
         var tokens = Tokenize(infix);
         var postfix = InfixToPostfix(tokens);
@@ -48,7 +48,7 @@ public class Evaluator
 
         foreach (var token in tokens)
         {
-            if (double.TryParse(token, NumberStyles.Any, CultureInfo.InvariantCulture, out _))
+            if (decimal.TryParse(token, NumberStyles.Any, CultureInfo.InvariantCulture, out _))
             {
                 output.Enqueue(token);
             }
@@ -96,15 +96,15 @@ public class Evaluator
         _ => 0
     };
 
-    private static double EvaluatePostfix(Queue<string> postfix)
+    private static decimal EvaluatePostfix(Queue<string> postfix)
     {
-        var stack = new Stack<double>();
+        var stack = new Stack<decimal>();
 
         while (postfix.Count > 0)
         {
             var token = postfix.Dequeue();
 
-            if (double.TryParse(token, NumberStyles.Any, CultureInfo.InvariantCulture, out double num))
+            if (decimal.TryParse(token, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal num))
             {
                 stack.Push(num);
             }
@@ -113,8 +113,8 @@ public class Evaluator
                 if (stack.Count < 2)
                     throw new Exception("Expresión inválida");
 
-                double b = stack.Pop();
-                double a = stack.Pop();
+                decimal b = stack.Pop();
+                decimal a = stack.Pop();
 
                 stack.Push(token switch
                 {
@@ -122,12 +122,13 @@ public class Evaluator
                     "-" => a - b,
                     "*" => a * b,
                     "/" => b == 0 ? throw new DivideByZeroException() : a / b,
-                    "^" => Math.Pow(a, b),
+                    "^" => (decimal)Math.Pow((double)a, (double)b),
                     _ => throw new Exception("Operador inválido")
                 });
             }
         }
 
-        return stack.Pop();
+        var result = stack.Pop();
+        return result;
     }
 }
