@@ -118,12 +118,13 @@ namespace ExpressionEvaluator.UI.Win
         private void btnEqual_Click(object sender, EventArgs e)
         {
             try
-            {
-                var result = Evaluator.Evaluate(txtDisplay.Text);
+    {
+        var result = Evaluator.Evaluate(txtDisplay.Text);
 
-                txtDisplay.Text = result.ToString("0.##############", System.Globalization.CultureInfo.InvariantCulture);
+        result = Math.Round(result, 15);
 
-            }
+        txtDisplay.Text = result.ToString("0.###############",System.Globalization.CultureInfo.InvariantCulture);
+    }
             catch
             {
                 txtDisplay.Text = "Error";
